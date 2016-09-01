@@ -85,6 +85,8 @@ class Checkboxes extends InputAbstract
 
             $this->moveCursorToTop();
             $this->updateCheckboxView();
+
+            $this->lastCurrent = false;
         }
     }
 
@@ -121,7 +123,9 @@ class Checkboxes extends InputAbstract
      */
     protected function moveCursorToTop()
     {
-        $output = $this->util->cursor->up($this->checkboxes->count() - 1);
+        $val = isset($this->lastCurrent) && $this->lastCurrent == 'previous' ? 2 : 1;
+
+        $output = $this->util->cursor->up($this->checkboxes->count() - $val);
         $output .= $this->util->cursor->startOfCurrentLine();
 
         $this->output->sameLine()->write($output);
@@ -135,6 +139,7 @@ class Checkboxes extends InputAbstract
         switch ($this->reader->char(2)) {
             // Up arrow
             case '[A':
+                $this->lastCurrent = 'previous';
                 $this->checkboxes->setCurrent('previous');
             break;
 
